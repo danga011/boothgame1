@@ -6,7 +6,6 @@ import StartPage from './features/start/StartPage';
 import OnboardingPage from './features/onboarding/OnboardingPage';
 import GamePage from './features/game/GamePage';
 import ResultsPage from './features/results/ResultsPage';
-import RankingPage from './features/ranking/RankingPage';
 
 export default function App() {
   const [step, setStep] = useState<AppStep>('idle');
@@ -69,7 +68,6 @@ export default function App() {
     setStep('results');
   };
 
-  const handleResultsNext = () => setStep('ranking');
   const handleFinish = () => reset();
 
   switch (step) {
@@ -83,21 +81,9 @@ export default function App() {
       return <GamePage onComplete={handleGameComplete} />;
 
     case 'results':
-      return gameResult
-        ? <ResultsPage result={gameResult} onNext={handleResultsNext} />
+      return gameResult && playerInfo
+        ? <ResultsPage result={gameResult} playerInfo={playerInfo} onFinish={handleFinish} />
         : null;
-
-    case 'ranking':
-      return (
-        <RankingPage
-          currentPlayer={
-            playerInfo && gameResult
-              ? { name: playerInfo.name, branch: playerInfo.branch, totalScore: gameResult.totalScore }
-              : undefined
-          }
-          onFinish={handleFinish}
-        />
-      );
 
     default:
       return null;

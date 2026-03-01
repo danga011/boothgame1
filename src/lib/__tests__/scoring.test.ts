@@ -6,45 +6,35 @@ import {
   getRecommendation,
 } from '../scoring';
 import type { AnswerOption, RoundResult, Major } from '../../types';
-import { MAJORS } from '../../types';
+import { MAJORS, ROUND_COUNT } from '../../types';
 
 const mockOption: AnswerOption = {
   text: '테스트',
   weights: {
-    컴퓨터학부: 40,
-    ICT융합학부: 25,
+    컴퓨터학부: 45,
+    ICT융합학부: 20,
     인공지능학과: 15,
     수리데이터사이언스학과: 20,
   },
 };
 
 describe('calculateRoundScore', () => {
-  it('최대 속도보너스(20초 남음)시 총점 130', () => {
-    const { roundScore } = calculateRoundScore(mockOption, 20_000);
-    expect(roundScore).toBe(130);
-  });
-
-  it('속도보너스 0(0초 남음)시 총점 100', () => {
-    const { roundScore } = calculateRoundScore(mockOption, 0);
+  it('MBTI 방식: 라운드 총점 100', () => {
+    const { roundScore } = calculateRoundScore(mockOption);
     expect(roundScore).toBe(100);
   });
 
   it('학과별 점수 합이 라운드 총점과 같다', () => {
-    const { majorScores, roundScore } = calculateRoundScore(mockOption, 15_000);
+    const { majorScores, roundScore } = calculateRoundScore(mockOption);
     const sum = Object.values(majorScores).reduce((a, b) => a + b, 0);
     expect(sum).toBe(roundScore);
   });
 
   it('가중치 비율에 따라 점수가 배분된다', () => {
-    const { majorScores } = calculateRoundScore(mockOption, 20_000);
-    // 40%가 가장 높아야 함
+    const { majorScores } = calculateRoundScore(mockOption);
+    // 45%가 가장 높아야 함
     expect(majorScores['컴퓨터학부']).toBeGreaterThan(majorScores['인공지능학과']);
     expect(majorScores['컴퓨터학부']).toBeGreaterThan(majorScores['수리데이터사이언스학과']);
-  });
-
-  it('음수 시간은 0으로 처리', () => {
-    const { roundScore } = calculateRoundScore(mockOption, -1000);
-    expect(roundScore).toBe(100);
   });
 });
 
@@ -59,36 +49,36 @@ describe('calculateTimeoutRoundScore', () => {
 });
 
 describe('calculateGameResult', () => {
-  it('4라운드 결과를 정확히 합산한다', () => {
-    const rounds: RoundResult[] = MAJORS.map((_, i) => {
-      const { majorScores, roundScore } = calculateRoundScore(mockOption, 20_000);
+  it('12라운드 결과를 정확히 합산한다', () => {
+    const rounds: RoundResult[] = Array.from({ length: ROUND_COUNT }, (_, i) => {
+      const { majorScores, roundScore } = calculateRoundScore(mockOption);
       return {
         round: i + 1,
         selectedOption: 0,
-        timeRemainingMs: 20_000,
+        timeRemainingMs: 0,
         majorScores: majorScores as Record<Major, number>,
         roundScore,
       };
     });
 
-    const result = calculateGameResult(rounds, 60_000);
-    expect(result.totalScore).toBe(130 * 4); // 520
-    expect(result.durationMs).toBe(60_000);
+    const result = calculateGameResult(rounds, 120_000);
+    expect(result.totalScore).toBe(100 * ROUND_COUNT); // 1200
+    expect(result.durationMs).toBe(120_000);
   });
 
   it('학과별 퍼센트가 합산 ~100%', () => {
-    const rounds: RoundResult[] = MAJORS.map((_, i) => {
-      const { majorScores, roundScore } = calculateRoundScore(mockOption, 10_000);
+    const rounds: RoundResult[] = Array.from({ length: ROUND_COUNT }, (_, i) => {
+      const { majorScores, roundScore } = calculateRoundScore(mockOption);
       return {
         round: i + 1,
         selectedOption: 0,
-        timeRemainingMs: 10_000,
+        timeRemainingMs: 0,
         majorScores: majorScores as Record<Major, number>,
         roundScore,
       };
     });
 
-    const result = calculateGameResult(rounds, 80_000);
+    const result = calculateGameResult(rounds, 120_000);
     const percentSum = Object.values(result.majorPercents).reduce((a, b) => a + b, 0);
     // 반올림으로 인해 ±1 허용
     expect(percentSum).toBeGreaterThanOrEqual(99);
@@ -96,15 +86,15 @@ describe('calculateGameResult', () => {
   });
 
   it('0점일 때 균등 배분 (25%)', () => {
-    const rounds: RoundResult[] = [1, 2, 3, 4].map((round) => ({
-      round,
+    const rounds: RoundResult[] = Array.from({ length: ROUND_COUNT }, (_, i) => ({
+      round: i + 1,
       selectedOption: -1,
       timeRemainingMs: 0,
       majorScores: Object.fromEntries(MAJORS.map((m) => [m, 0])) as Record<Major, number>,
       roundScore: 0,
     }));
 
-    const result = calculateGameResult(rounds, 80_000);
+    const result = calculateGameResult(rounds, 120_000);
     for (const m of MAJORS) {
       expect(result.majorPercents[m]).toBe(25);
     }

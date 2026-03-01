@@ -3,18 +3,13 @@ import { MAJORS } from '../types';
 
 /**
  * 한 라운드의 점수를 계산한다.
- * accuracy(100) + speedBonus(최대 30) = 최대 130
- * 각 학과에 가중치 비율로 배분한다.
+ * MBTI 방식: 속도 보너스 없이 가중치 기반 배분만 수행.
+ * 라운드당 100점을 학과별 가중치 비율로 배분한다.
  */
 export function calculateRoundScore(
   option: AnswerOption,
-  timeRemainingMs: number,
 ): { majorScores: Record<Major, number>; roundScore: number } {
-  const accuracy = 100;
-  const speedBonus = Math.floor(
-    (Math.max(0, timeRemainingMs) / 20_000) * 30,
-  );
-  const totalRoundScore = accuracy + speedBonus;
+  const totalRoundScore = 100;
 
   const majorScores = {} as Record<Major, number>;
   let allocated = 0;
@@ -35,7 +30,7 @@ export function calculateRoundScore(
 }
 
 /**
- * 시간 초과 시 라운드 점수 (0점)
+ * 시간 초과(또는 미응답) 시 라운드 점수 (0점)
  */
 export function calculateTimeoutRoundScore(): {
   majorScores: Record<Major, number>;

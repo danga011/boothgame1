@@ -53,7 +53,7 @@ export default function Button({
       border: `2px solid ${selected ? colors.primary : colors.border}`,
       height: 'auto',
       minHeight: sizes.buttonHeight,
-      padding: '16px 24px',
+      padding: '14px 20px',
       textAlign: 'left' as const,
       justifyContent: 'flex-start' as const,
       fontSize: sizes.fontBase,

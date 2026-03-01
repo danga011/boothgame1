@@ -1,10 +1,11 @@
-/** 부스 디스플레이 최적화 디자인 토큰 */
+/** LINK 브랜딩 + 부스 디스플레이 최적화 디자인 토큰 */
 
 export const colors = {
-  primary: '#3b82f6',
-  primaryDark: '#2563eb',
-  secondary: '#8b5cf6',
-  accent: '#06b6d4',
+  // LINK 브랜드 컬러
+  primary: '#f59e0b',
+  primaryDark: '#d97706',
+  secondary: '#fbbf24',
+  accent: '#f97316',
   success: '#10b981',
   warning: '#f59e0b',
   error: '#ef4444',
@@ -34,8 +35,8 @@ export const sizes = {
   fontSm: '0.95rem',
 
   /** 버튼 높이 (부스 터치 최적화) */
-  buttonHeight: '64px',
-  buttonRadius: '16px',
+  buttonHeight: '56px',
+  buttonRadius: '14px',
 
   /** 카드 */
   cardRadius: '20px',

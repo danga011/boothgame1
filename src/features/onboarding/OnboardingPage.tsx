@@ -69,7 +69,6 @@ export default function OnboardingPage({ onSubmit, onBack }: OnboardingPageProps
       onSubmit(branch, name, phoneHash);
     } catch (err) {
       console.warn('Onboarding check error:', err);
-      // 에러 시에도 게임 진행 허용 (오프라인 허용)
       const phoneHash = await sha256(phoneLast4);
       onSubmit(branch, name, phoneHash);
     } finally {
@@ -157,7 +156,7 @@ export default function OnboardingPage({ onSubmit, onBack }: OnboardingPageProps
               const v = e.target.value.replace(/\D/g, '').slice(0, 4);
               setPhoneLast4(v);
             }}
-            placeholder="●●●●"
+            placeholder="0000"
             maxLength={4}
             autoComplete="off"
             style={{ ...inputStyle, letterSpacing: '8px', textAlign: 'center' }}
@@ -197,7 +196,7 @@ export default function OnboardingPage({ onSubmit, onBack }: OnboardingPageProps
             disabled={loading}
             style={{ flex: 1, opacity: loading ? 0.6 : 1 }}
           >
-            {loading ? '확인 중...' : '시작하기'}
+            {loading ? '확인 중...' : '검사 시작'}
           </Button>
         </div>
       </div>
