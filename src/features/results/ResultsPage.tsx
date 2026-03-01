@@ -77,6 +77,7 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
     setEmailStatus('saving');
     try {
+      if (!supabase) throw new Error('Not connected');
       const { data, error } = await supabase.functions.invoke('send-report-email', {
         body: {
           email,
