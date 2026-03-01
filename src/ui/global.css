@@ -3,12 +3,14 @@
 :root {
   --color-primary: #f59e0b;
   --color-primary-dark: #d97706;
+  --color-primary-light: #fbbf24;
   --color-secondary: #fbbf24;
   --color-accent: #f97316;
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
   --color-bg: #0f172a;
+  --color-bg-darker: #0a0f1e;
   --color-surface: #1e293b;
   --color-card: #334155;
   --color-text: #f8fafc;
@@ -35,6 +37,7 @@ body,
   color: var(--color-text);
   font-size: 18px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
@@ -59,14 +62,20 @@ button:focus {
   display: none;
 }
 
-/* 애니메이션 */
+/* ── 코어 애니메이션 ── */
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -76,12 +85,23 @@ button:focus {
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.9); }
+  from { opacity: 0; transform: scale(0.92); }
   to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes scaleInBounce {
+  0%   { opacity: 0; transform: scale(0.85); }
+  60%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 @keyframes slideInLeft {
   from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
@@ -95,12 +115,66 @@ button:focus {
   from { width: 0; }
 }
 
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.15); }
+  50%      { box-shadow: 0 0 40px rgba(245, 158, 11, 0.3); }
+}
+
+@keyframes pulseRing {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(30px, -20px) scale(1.05); }
+  66%      { transform: translate(-20px, 15px) scale(0.95); }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-25px, 20px) scale(0.95); }
+  66%      { transform: translate(15px, -25px) scale(1.05); }
+}
+
+@keyframes confettiDrop {
+  0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(60px) rotate(360deg); opacity: 0; }
+}
+
+@keyframes badgeReveal {
+  0%   { opacity: 0; transform: scale(0.6) rotate(-5deg); }
+  50%  { opacity: 1; transform: scale(1.05) rotate(1deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes tapPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.05); opacity: 0.7; }
+}
+
+/* ── 유틸리티 애니메이션 클래스 ── */
+
 .animate-fade-in {
   animation: fadeIn 0.4s ease-out;
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.5s ease-out;
+  animation: fadeInUp 0.5s ease-out both;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.4s ease-out;
 }
 
 .animate-pulse {
@@ -111,11 +185,48 @@ button:focus {
   animation: scaleIn 0.3s ease-out;
 }
 
+.animate-scale-in-bounce {
+  animation: scaleInBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 .animate-slide-in {
   animation: slideInLeft 0.4s ease-out;
 }
 
-/* 보고서 전용 스타일 */
+.animate-slide-in-right {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+.animate-tap-pulse {
+  animation: tapPulse 2s ease-in-out infinite;
+}
+
+.animate-badge-reveal {
+  animation: badgeReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* 스태거 딜레이 */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* ── 보고서 전용 스타일 ── */
+
 .report-scrollable {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -126,7 +237,85 @@ button:focus {
   display: none;
 }
 
-/* 진행 바 애니메이션 */
+/* ── 진행 바 애니메이션 ── */
+
 .progress-bar-fill {
   animation: progressFill 0.3s ease-out;
+}
+
+/* ── 그라데이션 텍스트 시머 ── */
+
+.gradient-text-shimmer {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── 앰비언트 배경 오브 ── */
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.12;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.ambient-orb-1 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #f59e0b, transparent 70%);
+  top: -80px;
+  right: -60px;
+  animation: orbFloat1 12s ease-in-out infinite;
+}
+
+.ambient-orb-2 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, #f97316, transparent 70%);
+  bottom: -60px;
+  left: -60px;
+  animation: orbFloat2 15s ease-in-out infinite;
+}
+
+.ambient-orb-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #3b82f6, transparent 70%);
+  top: 40%;
+  left: 50%;
+  animation: orbFloat1 18s ease-in-out infinite reverse;
+}
+
+/* ── 버튼 터치 피드백 ── */
+
+button:active:not(:disabled) {
+  transform: scale(0.97) !important;
+  transition: transform 0.08s ease !important;
+}
+
+/* ── 입력 필드 포커스 글로우 ── */
+
+input:focus,
+select:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+
+/* ── 선택지 립플 효과 ── */
+
+.option-selected {
+  position: relative;
+  overflow: hidden;
+}
+
+.option-selected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+  pointer-events: none;
 }

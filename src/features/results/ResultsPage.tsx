@@ -101,6 +101,8 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
     borderRadius: sizes.cardRadius,
     padding: '20px',
     width: '100%',
+    border: `1px solid ${colors.border}25`,
+    boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
   };
 
   return (
@@ -122,50 +124,76 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
       >
         {/* 헤더: 로고 + 타이틀 */}
         <div className="animate-fade-in" style={{ textAlign: 'center', marginBottom: '4px' }}>
-          <picture>
-            <source srcSet="/link-logo.png" type="image/png" />
+          <div style={{ position: 'relative', display: 'inline-block', marginBottom: '12px' }}>
+            <div
+              style={{
+                position: 'absolute',
+                inset: '-12px',
+                borderRadius: '50%',
+                background: `radial-gradient(circle, ${colors.primary}20, transparent 70%)`,
+                filter: 'blur(6px)',
+              }}
+            />
             <img
-              src="/link-logo.svg"
+              src="/link.png"
               alt="LINK"
-              style={{ width: '56px', height: '56px', objectFit: 'contain', marginBottom: '8px' }}
+              style={{
+                width: '64px',
+                height: '64px',
+                objectFit: 'contain',
+                position: 'relative',
+                filter: `drop-shadow(0 2px 12px ${colors.glowPrimary})`,
+              }}
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
-          </picture>
+          </div>
           <div style={{ fontSize: '0.85rem', color: colors.textMuted, letterSpacing: '1px' }}>
             LINK와 함께하는 소프트웨어융합대학 검사
           </div>
-          <div style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: '6px' }}>
+          <div
+            style={{
+              fontSize: '1.4rem',
+              fontWeight: 800,
+              marginTop: '8px',
+              background: `linear-gradient(135deg, ${colors.textPrimary}, ${colors.textSecondary})`,
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             {playerInfo.name}님의 검사 결과
           </div>
         </div>
 
         {/* 유형 뱃지 */}
         <div
-          className="animate-scale-in"
+          className="animate-badge-reveal"
           style={{
-            background: `linear-gradient(135deg, ${primaryColor}15, ${primaryColor}30)`,
-            border: `2px solid ${primaryColor}60`,
+            background: `linear-gradient(135deg, ${primaryColor}12, ${primaryColor}25, ${primaryColor}12)`,
+            border: `2px solid ${primaryColor}50`,
             borderRadius: sizes.cardRadius,
-            padding: '24px 20px',
+            padding: '28px 20px',
             textAlign: 'center',
             width: '100%',
+            position: 'relative',
           }}
         >
-          <div style={{ fontSize: '0.9rem', color: colors.textMuted, marginBottom: '8px' }}>
+          <div style={{ fontSize: '0.85rem', color: colors.textMuted, marginBottom: '10px', letterSpacing: '2px', textTransform: 'uppercase', position: 'relative' }}>
             당신의 유형
           </div>
           <div
             style={{
-              fontSize: '2.2rem',
+              fontSize: '2.4rem',
               fontWeight: 800,
               color: primaryColor,
               lineHeight: 1.2,
-              marginBottom: '8px',
+              marginBottom: '10px',
+              position: 'relative',
+              textShadow: `0 0 30px ${primaryColor}30`,
             }}
           >
             {typeName}
           </div>
-          <div style={{ fontSize: '1.1rem', fontWeight: 600, color: colors.textSecondary }}>
+          <div style={{ fontSize: '1.1rem', fontWeight: 600, color: colors.textSecondary, position: 'relative' }}>
             {result.recommendedMajor}
           </div>
         </div>
@@ -248,14 +276,15 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
                     {pct}%
                   </span>
                 </div>
-                <div style={{ width: '100%', height: '8px', borderRadius: '4px', background: colors.bgCard }}>
+                <div style={{ width: '100%', height: '8px', borderRadius: '4px', background: colors.bgCard, overflow: 'hidden' }}>
                   <div
                     style={{
                       width: `${Math.min(pct * 2, 100)}%`,
                       height: '100%',
                       borderRadius: '4px',
-                      background: MAJOR_COLORS[major],
-                      transition: 'width 0.6s ease',
+                      background: `linear-gradient(90deg, ${MAJOR_COLORS[major]}90, ${MAJOR_COLORS[major]})`,
+                      transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+                      boxShadow: `0 0 8px ${MAJOR_COLORS[major]}40`,
                     }}
                   />
                 </div>
@@ -271,17 +300,21 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
               당신의 강점
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-              {MAJOR_TRAITS[singleMajor].map((trait) => (
+              {MAJOR_TRAITS[singleMajor].map((trait, i) => (
                 <div
                   key={trait}
+                  className="animate-fade-in-up"
                   style={{
                     background: colors.bgCard,
                     borderRadius: '12px',
-                    padding: '12px',
+                    padding: '14px 12px',
                     textAlign: 'center',
                     fontSize: '0.9rem',
                     fontWeight: 600,
                     color: colors.textPrimary,
+                    borderTop: `3px solid ${primaryColor}${i === 0 ? '' : '60'}`,
+                    animationDelay: `${i * 0.08}s`,
+                    animationFillMode: 'both',
                   }}
                 >
                   {trait}
@@ -395,7 +428,10 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
             검사 결과를 이메일로 받아보세요
           </div>
           {emailStatus === 'saved' ? (
-            <div style={{ color: colors.success, fontWeight: 600, fontSize: '0.95rem', padding: '10px 0' }}>
+            <div className="animate-scale-in-bounce" style={{ color: colors.success, fontWeight: 600, fontSize: '0.95rem', padding: '10px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
               결과가 이메일로 전송되었습니다!
             </div>
           ) : (

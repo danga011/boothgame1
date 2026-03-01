@@ -23,7 +23,7 @@ export default function GamePage({ onComplete }: GamePageProps) {
       setTimeout(() => {
         setShowTransition(false);
         setCurrentRound((r) => r + 1);
-      }, 500);
+      }, 600);
     } else {
       const durationMs = Date.now() - gameStartRef.current;
       onComplete(resultsRef.current, durationMs);
@@ -35,7 +35,7 @@ export default function GamePage({ onComplete }: GamePageProps) {
   if (showTransition) {
     return (
       <div
-        className="animate-scale-in"
+        className="animate-scale-in-bounce"
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -43,15 +43,29 @@ export default function GamePage({ onComplete }: GamePageProps) {
           justifyContent: 'center',
           width: '100%',
           height: '100%',
-          gap: '16px',
+          gap: '20px',
         }}
       >
-        <div style={{ fontSize: '1.1rem', color: colors.textMuted }}>
-          {currentRound + 1} / {ROUND_COUNT}
-        </div>
+        {/* 라운드 넘버 */}
         <div
           style={{
-            width: '200px',
+            fontSize: '3rem',
+            fontWeight: 800,
+            background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Q{currentRound + 2}
+        </div>
+        <div style={{ fontSize: '1rem', color: colors.textMuted, fontWeight: 500 }}>
+          {currentRound + 2} / {ROUND_COUNT}
+        </div>
+
+        {/* 진행 바 */}
+        <div
+          style={{
+            width: '220px',
             height: '6px',
             borderRadius: '3px',
             background: colors.bgCard,
@@ -64,7 +78,7 @@ export default function GamePage({ onComplete }: GamePageProps) {
               height: '100%',
               borderRadius: '3px',
               background: `linear-gradient(90deg, ${colors.primary}, ${colors.accent})`,
-              transition: 'width 0.3s ease',
+              transition: 'width 0.4s ease',
             }}
           />
         </div>

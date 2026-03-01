@@ -11,6 +11,8 @@ interface RoundProps {
   onComplete: (result: RoundResult) => void;
 }
 
+const optionLabels = ['A', 'B', 'C', 'D'];
+
 export default function Round({ question, currentRound, totalRounds, onComplete }: RoundProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const answered = useRef(false);
@@ -32,7 +34,7 @@ export default function Round({ question, currentRound, totalRounds, onComplete 
           majorScores: majorScores as Record<Major, number>,
           roundScore,
         });
-      }, 400);
+      }, 450);
     },
     [question, onComplete],
   );
@@ -54,22 +56,41 @@ export default function Round({ question, currentRound, totalRounds, onComplete 
         justifyContent: 'center',
       }}
     >
-      {/* 진행 상황 */}
+      {/* 상단: 진행 상황 */}
       <div style={{ textAlign: 'center' }}>
         <div
           style={{
-            fontSize: sizes.fontSm,
-            color: colors.textMuted,
-            fontWeight: 600,
-            marginBottom: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            marginBottom: '10px',
           }}
         >
-          Q{currentRound + 1} / {totalRounds}
+          <span
+            style={{
+              fontSize: '1.5rem',
+              fontWeight: 800,
+              color: colors.primary,
+            }}
+          >
+            Q{currentRound + 1}
+          </span>
+          <span
+            style={{
+              fontSize: sizes.fontSm,
+              color: colors.textMuted,
+              fontWeight: 500,
+            }}
+          >
+            / {totalRounds}
+          </span>
         </div>
+        {/* 프로그레스 바 */}
         <div
           style={{
             width: '100%',
-            height: '6px',
+            height: '5px',
             borderRadius: '3px',
             background: colors.bgCard,
             overflow: 'hidden',
@@ -82,21 +103,28 @@ export default function Round({ question, currentRound, totalRounds, onComplete 
               height: '100%',
               borderRadius: '3px',
               background: `linear-gradient(90deg, ${colors.primary}, ${colors.accent})`,
-              transition: 'width 0.3s ease',
+              transition: 'width 0.4s ease',
+              boxShadow: `0 0 8px ${colors.glowPrimary}`,
             }}
           />
         </div>
       </div>
 
-      {/* 질문 */}
+      {/* 질문 텍스트 */}
       <div
         style={{
           textAlign: 'center',
           fontSize: sizes.fontLg,
           fontWeight: 700,
-          lineHeight: 1.5,
+          lineHeight: 1.55,
           whiteSpace: 'pre-line',
-          margin: '12px 0',
+          margin: '14px 0 6px',
+          color: colors.textPrimary,
+          background: colors.bgSurface,
+          borderRadius: sizes.cardRadius,
+          padding: '24px 20px',
+          border: `1px solid ${colors.border}30`,
+          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
         }}
       >
         {question.scenario}
@@ -105,23 +133,52 @@ export default function Round({ question, currentRound, totalRounds, onComplete 
       {/* 선택지 */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {question.options.map((opt, idx) => (
-          <Button
+          <div
             key={idx}
-            variant="option"
-            fullWidth
-            selected={selected === idx}
-            disabled={answered.current}
-            onClick={() => handleSelect(idx)}
+            className="animate-fade-in-up"
             style={{
-              opacity: selected !== null && selected !== idx ? 0.4 : 1,
-              transition: 'all 0.2s ease',
+              animationDelay: `${idx * 0.06}s`,
+              animationFillMode: 'both',
             }}
           >
-            <span style={{ marginRight: '12px', fontWeight: 800, color: colors.primary }}>
-              {String.fromCharCode(65 + idx)}
-            </span>
-            {opt.text}
-          </Button>
+            <Button
+              variant="option"
+              fullWidth
+              selected={selected === idx}
+              disabled={answered.current}
+              onClick={() => handleSelect(idx)}
+              style={{
+                opacity: selected !== null && selected !== idx ? 0.35 : 1,
+                transform: selected === idx ? 'scale(1.01)' : 'scale(1)',
+                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
+            >
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '8px',
+                  background: selected === idx
+                    ? colors.primary
+                    : `${colors.primary}18`,
+                  color: selected === idx
+                    ? '#0f172a'
+                    : colors.primary,
+                  fontWeight: 800,
+                  fontSize: '0.85rem',
+                  marginRight: '14px',
+                  flexShrink: 0,
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {optionLabels[idx]}
+              </span>
+              {opt.text}
+            </Button>
+          </div>
         ))}
       </div>
     </div>
