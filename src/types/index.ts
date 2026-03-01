@@ -1,6 +1,6 @@
 // ── Domain Constants ──
 
-export const BRANCHES = ['자율전공학부', '인문계열', '자연계열', '기타'] as const;
+export const BRANCHES = ['인문', '자연', '전'] as const;
 export type Branch = (typeof BRANCHES)[number];
 
 export const MAJORS = [

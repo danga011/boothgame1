@@ -37,7 +37,7 @@ export default function StartPage({ onStart }: StartPageProps) {
             WebkitTextFillColor: 'transparent',
           }}
         >
-          컴퓨터공학부
+          소프트웨어융합대학
           <br />
           학과 적성 탐색기
         </div>
