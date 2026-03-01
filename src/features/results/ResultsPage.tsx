@@ -12,7 +12,6 @@ import Button from '../../ui/Button';
 import { colors, sizes } from '../../ui/theme';
 import {
   MAJORS,
-  MAJOR_SHORT,
   MAJOR_DESCRIPTIONS,
   MAJOR_COLORS,
   MAJOR_TYPE_NAMES,
@@ -39,7 +38,7 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
   const [emailStatus, setEmailStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   const chartData = MAJORS.map((m) => ({
-    major: MAJOR_SHORT[m],
+    major: m,
     value: result.majorPercents[m],
     fullMark: 100,
   }));
@@ -241,7 +240,7 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
                 <PolarGrid stroke={colors.border} />
                 <PolarAngleAxis
                   dataKey="major"
-                  tick={{ fill: colors.textSecondary, fontSize: 13, fontWeight: 600 }}
+                  tick={{ fill: colors.textSecondary, fontSize: 11, fontWeight: 600 }}
                 />
                 <PolarRadiusAxis
                   angle={90}
@@ -409,7 +408,7 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
                 />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '0.9rem', fontWeight: 700, color: colors.textPrimary }}>
-                    {MAJOR_SHORT[m]}
+                    {m}
                   </div>
                   <div style={{ fontSize: '0.8rem', color: colors.textMuted }}>
                     {MAJOR_DESCRIPTIONS[m]}
