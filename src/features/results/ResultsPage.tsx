@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import {
   RadarChart,
   PolarGrid,
@@ -25,7 +25,6 @@ import {
   type GameResult,
   type PlayerInfo,
 } from '../../types';
-import { supabase } from '../../lib/supabase';
 
 interface ResultsPageProps {
   result: GameResult;
@@ -34,9 +33,6 @@ interface ResultsPageProps {
 }
 
 export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPageProps) {
-  const [email, setEmail] = useState('');
-  const [emailStatus, setEmailStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-
   const chartData = MAJORS.map((m) => ({
     major: m,
     value: result.majorPercents[m],
@@ -71,30 +67,6 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
     : isFusion
       ? MAJOR_COLORS[topMajor]
       : colors.primary;
-
-  const handleEmailSubmit = async () => {
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
-    setEmailStatus('saving');
-    try {
-      if (!supabase) throw new Error('Not connected');
-      const { data, error } = await supabase.functions.invoke('send-report-email', {
-        body: {
-          email,
-          playerName: playerInfo.name,
-          branch: playerInfo.branch,
-          phoneHash: playerInfo.phoneHash,
-          recommendedMajor: singleMajor || topMajor,
-          typeName,
-          majorPercents: result.majorPercents,
-        },
-      });
-      if (error) throw error;
-      if (data && !data.success) throw new Error(data.error);
-      setEmailStatus('saved');
-    } catch {
-      setEmailStatus('error');
-    }
-  };
 
   const sectionStyle: React.CSSProperties = {
     background: colors.bgSurface,
@@ -420,60 +392,6 @@ export default function ResultsPage({ result, playerInfo, onFinish }: ResultsPag
               </div>
             ))}
           </div>
-        </div>
-
-        {/* 이메일 섹션 */}
-        <div className="animate-fade-in-up" style={{ ...sectionStyle, textAlign: 'center' }}>
-          <div style={{ fontSize: '0.85rem', color: colors.textMuted, marginBottom: '8px', fontWeight: 600 }}>
-            검사 결과를 이메일로 받아보세요
-          </div>
-          {emailStatus === 'saved' ? (
-            <div className="animate-scale-in-bounce" style={{ color: colors.success, fontWeight: 600, fontSize: '0.95rem', padding: '10px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 6L9 17l-5-5" />
-              </svg>
-              결과가 이메일로 전송되었습니다!
-            </div>
-          ) : (
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input
-                type="email"
-                inputMode="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="email@example.com"
-                autoComplete="off"
-                style={{
-                  flex: 1,
-                  height: '48px',
-                  borderRadius: '12px',
-                  border: `2px solid ${colors.border}`,
-                  background: colors.bgCard,
-                  color: colors.textPrimary,
-                  padding: '0 16px',
-                  fontSize: '0.95rem',
-                }}
-              />
-              <Button
-                variant="primary"
-                onClick={handleEmailSubmit}
-                disabled={emailStatus === 'saving' || !email}
-                style={{
-                  minWidth: '80px',
-                  height: '48px',
-                  fontSize: '0.9rem',
-                  opacity: emailStatus === 'saving' ? 0.6 : 1,
-                }}
-              >
-                {emailStatus === 'saving' ? '...' : '보내기'}
-              </Button>
-            </div>
-          )}
-          {emailStatus === 'error' && (
-            <div style={{ color: colors.error, fontSize: '0.85rem', marginTop: '6px' }}>
-              전송에 실패했습니다. 다시 시도해주세요.
-            </div>
-          )}
         </div>
 
         {/* 하단 버튼 */}
